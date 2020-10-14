@@ -15,3 +15,11 @@ require("channels")
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
+
+import ReactOnRails from "react-on-rails";
+
+import PracticeAreaSection from "../bundles/PracticeAreaSection";
+
+ReactOnRails.register({
+  PracticeAreaSection
+});
