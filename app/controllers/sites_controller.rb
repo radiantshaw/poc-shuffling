@@ -15,6 +15,9 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = Site.new
+    @practice_area_props = {
+      practiceAreas: @site.practice_areas
+    }
   end
 
   # GET /sites/1/edit
