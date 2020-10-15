@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 
 function PracticeAreaSection(props) {
-  const [practiceAreas, setPracticeAreas] = useState(props.practiceAreas);
+
+  const [practiceAreas, setPracticeAreas] =
+    useState(props.practiceAreas.map(pa => {
+      return {
+        ...pa,
+        isDeleted: false
+      }
+    }));
 
   function addPracticeArea() {
     setPracticeAreas([
@@ -50,6 +57,29 @@ function PracticeAreaSection(props) {
     setPracticeAreas(newPracticeAreas);
   }
 
+  function deletePracticeArea(event) {
+    const listItem = event.target.parentNode;
+    const list = listItem.parentNode;
+    const index = [...list.childNodes].findIndex(item => item === listItem);
+
+    const newPracticeAreas = [...practiceAreas];
+    newPracticeAreas[index].isDeleted = true
+    setPracticeAreas(newPracticeAreas);
+  }
+
+  function renderHiddenAttributes(practiceArea) {
+    return ( practiceArea.id ?
+      <React.Fragment>
+        <input type="hidden"
+          name="site[practice_areas_attributes][][id]"
+          defaultValue={practiceArea.id} />
+        <input type="hidden"
+          name="site[practice_areas_attributes][][_destroy]"
+          defaultValue={practiceArea.isDeleted} />
+      </React.Fragment>
+    : null )
+  }
+
   return (
     <div className="field">
       <div>
@@ -58,12 +88,8 @@ function PracticeAreaSection(props) {
       </div>
       <ul>
         {practiceAreas.map((practiceArea, index) => (
-          <li key={index}>
-            {practiceArea.id ?
-              <input type="hidden"
-                name="site[practice_areas_attributes][][id]"
-                defaultValue={practiceArea.id} />
-              : null }
+          <li key={index} style={{ display: practiceArea.isDeleted? "none" : "list-item" }} >
+            {renderHiddenAttributes(practiceArea)}
             <input type="text" value={practiceArea.title}
               onChange={setPracticeAreaTitle}
               name="site[practice_areas_attributes][][title]" />
@@ -75,6 +101,8 @@ function PracticeAreaSection(props) {
               <button onClick={movePracticeAreaDown}
                 type="button" disabled>Move down</button>
               : <button onClick={movePracticeAreaDown} type="button">Move down</button>}
+              <button onClick={deletePracticeArea}
+                type="button">Delete</button>
           </li>
         ))}
       </ul>
