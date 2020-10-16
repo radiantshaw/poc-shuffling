@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import builder from "../builder";
 
 function PracticeAreaSection(props) {
 
@@ -67,14 +68,14 @@ function PracticeAreaSection(props) {
     setPracticeAreas(newPracticeAreas);
   }
 
-  function renderHiddenAttributes(practiceArea) {
+  function renderHiddenAttributes(builder, practiceArea) {
     return ( practiceArea.id ?
       <React.Fragment>
-        <input type="hidden"
-          name="site[practice_areas_attributes][][id]"
+        <builder.input type="hidden"
+          attribute="id"
           defaultValue={practiceArea.id} />
-        <input type="hidden"
-          name="site[practice_areas_attributes][][_destroy]"
+        <builder.input type="hidden"
+          attribute="_destroy"
           defaultValue={practiceArea.isDeleted} />
       </React.Fragment>
     : null )
@@ -89,10 +90,16 @@ function PracticeAreaSection(props) {
       <ul>
         {practiceAreas.map((practiceArea, index) => (
           <li key={index} style={{ display: practiceArea.isDeleted? "none" : "list-item" }} >
-            {renderHiddenAttributes(practiceArea)}
-            <input type="text" value={practiceArea.title}
-              onChange={setPracticeAreaTitle}
-              name="site[practice_areas_attributes][][title]" />
+            <builder.fields prefix="site[practice_areas_attributes]" collection>
+              {builder => (
+                <React.Fragment>
+                  {renderHiddenAttributes(builder, practiceArea)}
+                  <builder.input type="text" value={practiceArea.title}
+                    onChange={setPracticeAreaTitle}
+                    attribute="title" />
+                </React.Fragment>
+              )}
+            </builder.fields>
             {index === 0 ?
               <button onClick={movePracticeAreaUp}
                 type="button" disabled>Move up</button>
