@@ -54,7 +54,12 @@ function FormBuilder(prefix) {
       get: function() {
         return textarea.bind(this);
       }
-    }
+    },
+    fields: {
+      get: function() {
+        return fields.bind(this);
+      }
+    },
   });
 }
 
@@ -73,6 +78,31 @@ function form(props) {
   );
 }
 
+function fields(props) {
+  let prefix;
+
+  if (typeof this == "undefined") {
+    if (!props.prefix) {
+      throw new Error("`prefix' prop not passed to form builder");
+    }
+
+    prefix = props.prefix;
+  } else {
+    if (!props.attribute) {
+      throw new Error("`attribute' prop not passed to form builder");
+    }
+
+    prefix = this.prefix + '[' + props.attribute + ']';
+  }
+
+  return (
+    <React.Fragment>
+      { props.children && props.children(new FormBuilder(prefix)) }
+    </React.Fragment>
+  );
+}
+
 export default {
-  form: form
+  form: form,
+  fields: fields
 };
