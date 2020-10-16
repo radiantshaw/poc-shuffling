@@ -95,6 +95,10 @@ function fields(props) {
     prefix = this.prefix + '[' + props.attribute + ']';
   }
 
+  if (props.collection) {
+    prefix += "[]";
+  }
+
   return (
     <React.Fragment>
       { props.children && props.children(new FormBuilder(prefix)) }
