@@ -31,9 +31,18 @@ function form(props) {
 }
 
 function fieldsFor(props) {
-  const names = [...useContext(FormContext)];
-  names.push(props.name);
+  let formName = props.formName || useContext(FormContext);
 
+  if (!formName) {
+    throw new Error(`
+      No form name specified. Either use a root \`builder.form' and pass
+      a \`name' prop to it. Or if the form is rendered from the server,
+      then just specify the \`formName' prop to \`builder.fieldsFor'.
+    `);
+  }
+
+  const names = [formName];
+  names.push(props.name);
   if (props.collection) {
     names.push('');
   }
@@ -57,5 +66,4 @@ export default {
   form: form,
   input: input,
   fieldsFor: fieldsFor
-  // fieldsFor: fieldsFor
 };
