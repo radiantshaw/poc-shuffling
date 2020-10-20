@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import builder from "../builder";
+import builder from "../form-builder";
 
 function PracticeAreaSection(props) {
 
@@ -68,19 +68,6 @@ function PracticeAreaSection(props) {
     setPracticeAreas(newPracticeAreas);
   }
 
-  function renderHiddenAttributes(builder, practiceArea) {
-    return ( practiceArea.id ?
-      <React.Fragment>
-        <builder.input type="hidden"
-          attribute="id"
-          defaultValue={practiceArea.id} />
-        <builder.input type="hidden"
-          attribute="_destroy"
-          defaultValue={practiceArea.isDeleted} />
-      </React.Fragment>
-    : null )
-  }
-
   return (
     <div className="field">
       <div>
@@ -90,16 +77,23 @@ function PracticeAreaSection(props) {
       <ul>
         {practiceAreas.map((practiceArea, index) => (
           <li key={index} style={{ display: practiceArea.isDeleted? "none" : "list-item" }} >
-            <builder.fields prefix="site[practice_areas_attributes]" collection>
-              {builder => (
+            <builder.fieldsFor name="practice_areas_attributes"
+              formName="site" collection>
+              {practiceArea.id ?
                 <React.Fragment>
-                  {renderHiddenAttributes(builder, practiceArea)}
-                  <builder.input type="text" value={practiceArea.title}
-                    onChange={setPracticeAreaTitle}
-                    attribute="title" />
+                  <builder.input name="id" type="hidden"
+                    defaultValue={practiceArea.id}
+                  />
+                  <builder.input name="_destroy" type="hidden"
+                    defaultValue={practiceArea.isDeleted}
+                  />
                 </React.Fragment>
-              )}
-            </builder.fields>
+              : null}
+              <builder.input name="title" type="text"
+                value={practiceArea.title}
+                onChange={setPracticeAreaTitle}
+              />
+            </builder.fieldsFor>
             {index === 0 ?
               <button onClick={movePracticeAreaUp}
                 type="button" disabled>Move up</button>
